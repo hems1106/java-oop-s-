@@ -1,0 +1,134 @@
+import java.sql.*;
+
+import java.util.Scanner; // Import the Scanner class
+
+public class dbtest {
+
+public static void main(String[] args) {
+
+Connection connection = null;
+
+int opt=1;
+
+Scanner scanner = new Scanner(System.in);
+
+System.out.print("Enter your chioce 1 - DISPLAY 2 - INSERT: ");
+
+opt = scanner.nextInt(); // Reads an integer
+
+try {
+
+// Load MySQL JDBC driver
+
+Class.forName("com.mysql.cj.jdbc.Driver");
+
+// Establish connection
+
+connection = DriverManager.getConnection(
+
+"jdbc:mysql://localhost:3306/javadb", "oopdb", "oop@123"
+
+);
+
+PreparedStatement pstmt=null;
+
+// Create statement
+
+Statement statement = connection.createStatement();
+
+// Execute query
+
+
+ResultSet resultSet = statement.executeQuery("SELECT * FROM Employee");
+
+// Process results
+
+if (opt==1)
+
+{
+
+while (resultSet.next()) {
+
+int code = resultSet.getInt("EmpID");
+
+String title = resultSet.getString("FirstName").trim();
+
+String mail = resultSet.getString("Email").trim();
+
+String phone = resultSet.getString("PhoneNumber").trim();
+
+System.out.println("Employee_ids: " + code + " | First Name: " + title + " | EMAIL: " + mail + " | PHONE NUMBER: " + phone);
+
+}
+
+}
+
+if (opt==2)
+
+{
+
+String sql = "INSERT INTO Employee (EmpID, FirstName, LastName, Email, PhoneNumber, HireDate, Salary) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+
+// Create a PreparedStatement
+
+pstmt = connection.prepareStatement(sql);
+
+
+// Set the parameter values
+
+System.out.print("Enter Employee ID ");
+
+int ida = scanner.nextInt(); // Reads an integer
+
+pstmt.setInt(1, ida);
+
+pstmt.setString(2, "Alice Smith");
+
+pstmt.setString(3, "charles");
+
+System.out.print("Enter E-mail ID ");
+
+scanner.nextLine();
+
+String em = scanner.nextLine();
+
+pstmt.setString(4, em);
+
+System.out.print("phone number ");
+
+String ph = scanner.nextLine();
+
+pstmt.setString(5, ph);
+
+String dateString = "2025-10-16";
+
+pstmt.setString(6, dateString);
+
+float newSalary = 75000.50f;
+
+pstmt.setFloat(7, newSalary);
+
+int rowsAffected = pstmt.executeUpdate();
+
+System.out.println(rowsAffected + " row(s) inserted successfully.");
+
+}
+
+// Close resources
+
+resultSet.close();
+
+statement.close();
+
+connection.close();
+
+} catch (Exception e) {
+
+System.out.println(e);
+
+}
+
+}
+
+}
